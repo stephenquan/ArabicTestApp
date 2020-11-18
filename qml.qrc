@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/ArabicTestApp.qml</file>
+        <file>qml/itemsets.csv</file>
+    </qresource>
+</RCC>
