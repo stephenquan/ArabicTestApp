@@ -2,11 +2,12 @@
 #define __TextDevice__
 
 #include <QIODevice>
+#include <QByteArray>
 
-class TextDevice : public QIODevice
+class AutoUTF8BOMDevice : public QIODevice
 {
 public:
-    TextDevice(QIODevice* internal);
+    AutoUTF8BOMDevice(QIODevice* internal);
 
     bool open(OpenMode mode) Q_DECL_OVERRIDE;
     void close() Q_DECL_OVERRIDE;
@@ -23,8 +24,14 @@ public:
     qint64 readData(char *data, qint64 maxlen) Q_DECL_OVERRIDE;
     qint64 writeData(const char *data, qint64 len) Q_DECL_OVERRIDE;
 
+    static const QByteArray UTF8_BOM;
+    static const QByteArray UTF16BE_BOM;
+    static const QByteArray UTF16LE_BOM;
+
 protected:
     QIODevice* m_Internal;
+    QByteArray m_Buffer;
+    int m_Offset;
 
 };
 

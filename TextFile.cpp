@@ -3,6 +3,7 @@
 //----------------------------------------------------------------------
 
 #include "TextFile.h"
+#include "AutoUTF8BOMDevice.h"
 #include <QFile>
 
 //----------------------------------------------------------------------
@@ -13,6 +14,9 @@ TextFile::TextFile(QObject* parent) :
     QObject(parent),
     m_Device(nullptr),
     m_TextStream(nullptr)
+#ifdef AUTO_UTF8_BOM
+  , m_AutoUTF8Device(nullptr)
+#endif
 {
 }
 
@@ -39,6 +43,14 @@ void TextFile::close()
         delete m_TextStream;
         m_TextStream = nullptr;
     }
+
+#ifdef AUTO_UTF8_BOM
+    if (m_AutoUTF8Device)
+    {
+        m_AutoUTF8Device->close();
+        delete m_AutoUTF8Device;
+    }
+#endif
 
     if (m_Device)
     {
@@ -81,8 +93,18 @@ bool TextFile::open(const QString& filePath)
         return false;
     }
 
+#ifndef AUTO_UTF8_BOM
     m_Device = file;
     m_TextStream = new QTextStream(file);
+#endif
+
+#ifdef AUTO_UTF8_BOM
+    m_Device = file;
+    m_AutoUTF8Device = new AutoUTF8BOMDevice(file);
+    m_AutoUTF8Device->open(QIODevice::ReadOnly);
+    m_TextStream = new QTextStream(m_AutoUTF8Device);
+#endif
+
     return true;
 }
 

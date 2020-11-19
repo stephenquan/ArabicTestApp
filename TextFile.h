@@ -18,6 +18,12 @@
 //
 //----------------------------------------------------------------------
 
+//#define AUTO_UTF8_BOM
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 class TextFile : public QObject
 {
     Q_OBJECT
@@ -35,6 +41,9 @@ public:
 protected:
     QIODevice* m_Device;
     QTextStream* m_TextStream;
+#ifdef AUTO_UTF8_BOM
+    QIODevice* m_AutoUTF8Device;
+#endif
 
     bool open(const QString& filePath);
 
