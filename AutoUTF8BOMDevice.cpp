@@ -4,6 +4,7 @@
 
 #include "AutoUTF8BOMDevice.h"
 #include <QDebug>
+#include <QTextCodec>
 
 //----------------------------------------------------------------------
 //
@@ -41,6 +42,7 @@ bool AutoUTF8BOMDevice::open(OpenMode mode)
 
     m_Buffer = m_Internal->read(1024);
 
+    /*
     bool hasBOM = false;
     if (m_Buffer.left(UTF8_BOM.length()) == UTF8_BOM)
     {
@@ -54,6 +56,9 @@ bool AutoUTF8BOMDevice::open(OpenMode mode)
     {
         hasBOM = true;
     }
+    */
+
+    bool hasBOM = QTextCodec::codecForUtfText(m_Buffer, nullptr);
 
     // Test to see if this is an implicit UTF16BE .. 0.1%
     // Test to see if this is an implicit UTF16LE .. 0.1%
