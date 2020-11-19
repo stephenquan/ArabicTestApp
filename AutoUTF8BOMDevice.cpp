@@ -39,7 +39,7 @@ bool AutoUTF8BOMDevice::open(OpenMode mode)
         return false;
     }
 
-    m_Buffer = m_Internal->read(16);
+    m_Buffer = m_Internal->read(1024);
 
     bool hasBOM = false;
     if (m_Buffer.left(UTF8_BOM.length()) == UTF8_BOM)
@@ -55,8 +55,14 @@ bool AutoUTF8BOMDevice::open(OpenMode mode)
         hasBOM = true;
     }
 
+    // Test to see if this is an implicit UTF16BE .. 0.1%
+    // Test to see if this is an implicit UTF16LE .. 0.1%
+    // Test to see if this is an implicit UTF8 ... 80%
+    // Test to see if this is a region specific local file .. 15%
+
     if (!hasBOM)
     {
+        // Assume UTF8 if BOM was missing
         m_Buffer.insert(0, UTF8_BOM);
         m_Offset = UTF8_BOM.length();
     }
